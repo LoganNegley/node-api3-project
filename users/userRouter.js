@@ -142,20 +142,19 @@ router.put('/:id', (req, res) => {
           message:"The user with that specific ID does not exist"
         })
       }
-
+      
       if(!req.body.name){
         res.status(400).json({
-          errorMessage: 'You must provide a name for update'
-        })
-      }else{
-        res.status(200).json(user)
-
-        .catch(error =>{
-          res.status(500).json({
-          errorMessage: "The user information could not be updated"
-      })
+          errorMessage: 'You must provide a name for updating user'
+          })
+        }else{
+          res.status(200).json(user)
+        }
     })
-      }
+    .catch(error =>{
+      res.status(500).json({
+        errorMessage: 'User was not able to be updated'
+      })
     })
 });
 
