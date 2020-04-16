@@ -6,11 +6,6 @@ const router = express.Router();
 
 // Create a new user
 router.post('/', validateUser, (req, res) => {
-  // if(!req.body.name){
-  //   res.status(400).json({
-  //     errorMessage: 'Please include a name for new user'
-  //   })
-  // } else{
     db.insert(req.body)
       .then(user =>{
         res.status(201).json(user)
@@ -20,7 +15,6 @@ router.post('/', validateUser, (req, res) => {
           errorMessage: 'Error creating new user'
         })
       })
-  // }
 });
 
 // Creat new post for user 
@@ -144,12 +138,13 @@ function validateUserId(req, res, next) {
 };
 
 function validateUser(req, res, next) {
-  if(!req.body){
+  console.log(req.body)
+  if(req.body === {}){
     res.status(400).json({
       errorMessage: 'missing user data'
     })
-  }else if(!req.body.name){
-    res.statu(400).json({
+  } else if(!req.body.name){
+    res.status(400).json({
       errorMessage:'missing required name field'
     })
   }else{
