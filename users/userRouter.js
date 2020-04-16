@@ -24,27 +24,18 @@ router.post('/', (req, res) => {
 });
 
 // Creat new post for user 
-router.post('/:id/posts', (req, res) => {
+router.post('/:id/posts', validateUserId, (req, res) => {
     if(!req.body.text){
       res.status(400).json({
         errorMessage: 'Please provide text for this post'
       })
-    };
-
-    db.getById(req.params.id)
-      .then(user =>{
-        if(!user){
-          res.status(404).json({
-            message:'User with that ID does not exist'
-          })
-        }else{
+    }
           let newPost = {
             text:req.body.text,
             user_id: req.params.id
           }
           postDB.insert(newPost)
           .then(post =>{
-            console.log(post)
             res.status(200).json(post)
           })
           .catch(error =>{
@@ -52,9 +43,7 @@ router.post('/:id/posts', (req, res) => {
           error: 'There was an error while saving post to a user'
         })
       })
-      }
-})
-})
+});
 
 // Get user
 router.get('/', (req, res) => {
@@ -75,30 +64,17 @@ router.get('/:id', validateUserId, (req, res) => {
 })
 
 // Get posts with user ID
-router.get('/:id/posts', (req, res) => {
-  db.getById(req.params.id)
-      .then(user =>{
-        if(!user){
-          res.status(404).json({
-            message:'User with that ID does not exist'
-          })
-        }else{
+router.get('/:id/posts', validateUserId, (req, res) => {
           postDB.get()
             .then(post =>{
               res.status(200).json(post)
-            })
-            .catch(error =>{
-              res.status(500).json({
-                error:"error with getting post from user with that ID "
-              })
             })
         .catch(error =>{
           res.status(500).json({
           error: 'Error geting user post'
         })
       })
-  }}
-)});
+});
 
 // Delete user
 router.delete('/:id', (req, res) => {
@@ -149,7 +125,6 @@ router.put('/:id', (req, res) => {
 
 function validateUserId(req, res, next) {
   const id = req.params.id;
-  console.log(req.user)
   db.getById(id)
   .then(user =>{
     if(user){
@@ -163,7 +138,7 @@ function validateUserId(req, res, next) {
   })
   .catch(error =>{
     res.status(500).json({
-      errorMessage: 'Failed request for user'
+      errorMessage: 'Failed request for user with that Id'
     })
   })
 };
