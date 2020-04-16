@@ -144,21 +144,19 @@ router.put('/:id', (req, res) => {
       }
 
       if(!req.body.name){
-        res.status(400)json({
+        res.status(400).json({
           errorMessage: 'You must provide a name for update'
         })
       }else{
         res.status(200).json(user)
-      }
-    })
-    .catch(error =>{
-      res.status(500).json({
-        errorMessage: "The user information could not be updated"
+
+        .catch(error =>{
+          res.status(500).json({
+          errorMessage: "The user information could not be updated"
       })
     })
-
-
-
+      }
+    })
 });
 
 //custom middleware
