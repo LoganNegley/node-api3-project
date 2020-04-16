@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('./userDb');
+const postDB = require('../posts/postDb');
 
 const router = express.Router();
 
@@ -28,7 +29,8 @@ router.post('/:id/posts', (req, res) => {
       res.status(400).json({
         errorMessage: 'Please provide text for this post'
       })
-    }
+    };
+
     db.getById(req.params.id)
       .then(user =>{
         if(!user){
@@ -36,22 +38,35 @@ router.post('/:id/posts', (req, res) => {
             message:'User with that ID does not exist'
           })
         }else{
-          db.insert(req.body)
+          let newPost = {
+            text:req.body.text,
+            user_id: req.params.id
+          }
+          postDB.insert(newPost)
           .then(post =>{
+            console.log(post)
             res.status(200).json(post)
           })
-        }
-      })
-      .catch(error =>{
-        res.status(500).json({
+          .catch(error =>{
+          res.status(500).json({
           error: 'There was an error while saving post to a user'
         })
       })
+      }
+})
+})
 
-});
 
 router.get('/', (req, res) => {
-  // do your magic!
+  db.get()
+  .then(user =>{
+    res.status(200).json(user)
+  })
+  .catch(error =>{
+    res.status(500).json({
+      errorMessage: 'The user information could not be retreived'
+    })
+  })
 });
 
 router.get('/:id', (req, res) => {
