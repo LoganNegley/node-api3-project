@@ -5,12 +5,12 @@ const postDB = require('../posts/postDb');
 const router = express.Router();
 
 // Create a new user
-router.post('/', (req, res) => {
-  if(!req.body.name){
-    res.status(400).json({
-      errorMessage: 'Please include a name for new user'
-    })
-  } else{
+router.post('/', validateUser, (req, res) => {
+  // if(!req.body.name){
+  //   res.status(400).json({
+  //     errorMessage: 'Please include a name for new user'
+  //   })
+  // } else{
     db.insert(req.body)
       .then(user =>{
         res.status(201).json(user)
@@ -20,7 +20,7 @@ router.post('/', (req, res) => {
           errorMessage: 'Error creating new user'
         })
       })
-  }
+  // }
 });
 
 // Creat new post for user 
@@ -77,7 +77,7 @@ router.get('/:id/posts', validateUserId, (req, res) => {
 });
 
 // Delete user
-router.delete('/:id', (req, res) => {
+router.delete('/:id', validateUserId,  (req, res) => {
     db.remove(req.params.id)
       .then(user =>{
         if(!user){
@@ -95,7 +95,7 @@ router.delete('/:id', (req, res) => {
 )
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validateUserId, (req, res) => {
   db.update(req.params.id, {
     name: req.body.name
   })
@@ -144,8 +144,18 @@ function validateUserId(req, res, next) {
 };
 
 function validateUser(req, res, next) {
-  // do your magic!
-}
+  if(!req.body){
+    res.status(400).json({
+      errorMessage: 'missing user data'
+    })
+  }else if(!req.body.name){
+    res.statu(400).json({
+      errorMessage:'missing required name field'
+    })
+  }else{
+    next();
+  }
+};
 
 function validatePost(req, res, next) {
   // do your magic!
