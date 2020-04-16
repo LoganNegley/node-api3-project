@@ -70,22 +70,9 @@ router.get('/', (req, res) => {
 });
 
 // Get user with ID
-router.get('/:id', (req, res) => {
-  db.getById(req.params.id)
-      .then(user =>{
-        if(!user){
-          res.status(404).json({
-            message:'User with that ID does not exist'
-          })
-        }else{
-          res.status(200).json(user)
-        .catch(error =>{
-          res.status(500).json({
-          error: 'Error with getting user with that ID'
-        })
-      })
-  }}
-)})
+router.get('/:id', validateUserId, (req, res) => {
+  res.status(200).json(req.user)
+})
 
 // Get posts with user ID
 router.get('/:id/posts', (req, res) => {
@@ -162,18 +149,22 @@ router.put('/:id', (req, res) => {
 
 function validateUserId(req, res, next) {
   const id = req.params.id;
+  console.log(req.user)
   db.getById(id)
   .then(user =>{
-    if(!user){
-      res.status(404).json({
-        message: 'The user with that ID does not exist'
-      })
+    if(user){
+      req.user = user
+      next();
     }else{
-      res.status(200).json(user)
+      res.status(404).json({
+        message: 'User with that ID does not exist'
+      })
     }
   })
   .catch(error =>{
-    errorMessage: 'User was not able to be verified'
+    res.status(500).json({
+      errorMessage: 'Failed request for user'
+    })
   })
 };
 
