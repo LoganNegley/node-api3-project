@@ -68,6 +68,7 @@ router.get('/', (req, res) => {
     })
   })
 });
+
 // Get user with ID
 router.get('/:id', (req, res) => {
   db.getById(req.params.id)
@@ -80,7 +81,7 @@ router.get('/:id', (req, res) => {
           res.status(200).json(user)
         .catch(error =>{
           res.status(500).json({
-          error: 'There was an error while saving post to a user'
+          error: 'Error with getting user with that ID'
         })
       })
   }}
@@ -88,11 +89,47 @@ router.get('/:id', (req, res) => {
 
 // Get posts with user ID
 router.get('/:id/posts', (req, res) => {
-  
-});
+  db.getById(req.params.id)
+      .then(user =>{
+        if(!user){
+          res.status(404).json({
+            message:'User with that ID does not exist'
+          })
+        }else{
+          postDB.get()
+            .then(post =>{
+              res.status(200).json(post)
+            })
+            .catch(error =>{
+              res.status(500).json({
+                error:"error with getting post from user with that ID "
+              })
+            })
+        .catch(error =>{
+          res.status(500).json({
+          error: 'Error geting user post'
+        })
+      })
+  }}
+)});
 
+// Delete user
 router.delete('/:id', (req, res) => {
-  // do your magic!
+    db.remove(req.params.id)
+      .then(user =>{
+        if(!user){
+          res.status(404).json({
+            message:'User with that ID does not exist'
+          })
+        }else{
+          res.status(200).json(user)
+        .catch(error =>{
+          res.status(500).json({
+          error: 'The user was not able to deleted'
+        })
+      })
+  }}
+)
 });
 
 router.put('/:id', (req, res) => {
