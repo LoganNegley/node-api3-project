@@ -22,9 +22,9 @@ router.post('/', (req, res) => {
       })
   }
 });
+
 // Creat new post with for user 
 router.post('/:id/posts', (req, res) => {
-
     if(!req.body.text){
       res.status(400).json({
         errorMessage: 'Please provide text for this post'
@@ -56,7 +56,7 @@ router.post('/:id/posts', (req, res) => {
 })
 })
 
-
+// Get user
 router.get('/', (req, res) => {
   db.get()
   .then(user =>{
@@ -68,13 +68,27 @@ router.get('/', (req, res) => {
     })
   })
 });
-
+// Get user with ID
 router.get('/:id', (req, res) => {
-  // do your magic!
-});
+  db.getById(req.params.id)
+      .then(user =>{
+        if(!user){
+          res.status(404).json({
+            message:'User with that ID does not exist'
+          })
+        }else{
+          res.status(200).json(user)
+        .catch(error =>{
+          res.status(500).json({
+          error: 'There was an error while saving post to a user'
+        })
+      })
+  }}
+)})
 
+// Get posts with user ID
 router.get('/:id/posts', (req, res) => {
-  // do your magic!
+  
 });
 
 router.delete('/:id', (req, res) => {
