@@ -161,8 +161,21 @@ router.put('/:id', (req, res) => {
 //custom middleware
 
 function validateUserId(req, res, next) {
-  // do your magic!
-}
+  const id = req.params.id;
+  db.getById(id)
+  .then(user =>{
+    if(!user){
+      res.status(404).json({
+        message: 'The user with that ID does not exist'
+      })
+    }else{
+      res.status(200).json(user)
+    }
+  })
+  .catch(error =>{
+    errorMessage: 'User was not able to be verified'
+  })
+};
 
 function validateUser(req, res, next) {
   // do your magic!
