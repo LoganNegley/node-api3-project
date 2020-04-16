@@ -133,7 +133,32 @@ router.delete('/:id', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-  // do your magic!
+  db.update(req.params.id, {
+    name: req.body.name
+  })
+    .then(user =>{
+      if(!user){
+        res.status(404).json({
+          message:"The user with that specific ID does not exist"
+        })
+      }
+
+      if(!req.body.name){
+        res.status(400)json({
+          errorMessage: 'You must provide a name for update'
+        })
+      }else{
+        res.status(200).json(user)
+      }
+    })
+    .catch(error =>{
+      res.status(500).json({
+        errorMessage: "The user information could not be updated"
+      })
+    })
+
+
+
 });
 
 //custom middleware
