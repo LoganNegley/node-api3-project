@@ -23,7 +23,7 @@ router.post('/', (req, res) => {
   }
 });
 
-// Creat new post with for user 
+// Creat new post for user 
 router.post('/:id/posts', (req, res) => {
     if(!req.body.text){
       res.status(400).json({
