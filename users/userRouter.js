@@ -18,12 +18,7 @@ router.post('/', validateUser, (req, res) => {
 });
 
 // Creat new post for user 
-router.post('/:id/posts', validateUserId, (req, res) => {
-    if(!req.body.text){
-      res.status(400).json({
-        errorMessage: 'Please provide text for this post'
-      })
-    }
+router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
           let newPost = {
             text:req.body.text,
             user_id: req.params.id
@@ -153,7 +148,17 @@ function validateUser(req, res, next) {
 };
 
 function validatePost(req, res, next) {
-  // do your magic!
+      if(!req.body.text){
+      res.status(400).json({
+        errorMessage: 'Please provide text for this post'
+      })
+    }else if(!req.body){
+      res.status(400).json({
+        message:'Post body required to create post'
+      })
+    }else{
+      next();
+    }
 }
 
 module.exports = router;
