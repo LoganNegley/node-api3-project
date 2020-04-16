@@ -1,7 +1,9 @@
+// require('dotenv').config();
 const express = require('express');
 
 const server = require('./server');
 
-server.listen(4000, ()=>{
-    console.log('Listening on port 4000')
+const port = process.env.PORT;
+server.listen(port, ()=>{
+    console.log(`\n*** Server running on ${port} ***\n`)
 });
